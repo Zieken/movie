@@ -5,6 +5,133 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <h1>Change or remove this page</h1>
+        
+        <input id="movieById" type="text">
+        <button id="movieByIdButton">Get movie by id</button>
+
+        <div id="resultId"><div>
+                
+        <br>
+        <br>
+        
+        <input id="movieByTitle" type="text">
+        <button id="movieByTitleButton">Get movie by title</button>
+        
+        <div id="resultTitle"></div>
+                
+        <br>
+        <br>
+        
+        <button id="allMoviesButton">Get all Movies</button>
+        
+        <div id="resultAll"></div>       
+        
+        
+        <script> 
+            
+            function getMovieById()
+            {
+                var id = document.getElementById("movieById").value;
+                
+                let url = "http://localhost:8080/jpareststarter/api/xxx/" + id;
+                
+                fetch(url)
+                    .then(res => res.json()) //in flow1, just do it
+                    .then(data => {
+                     // Inside this callback, and only here, the response data is available
+                     console.log("data",data);
+                    /* data now contains the response, converted to JavaScript
+                       Observe the output from the log-output above
+                       Now, just build your DOM changes using the data*/ 
+                
+                    //render all values of each key
+                    for(key in data)
+                    {
+                        var paragraph = document.createElement("p");
+                        var node = document.createTextNode(data[key]);
+
+                        paragraph.appendChild(node);
+
+                        document.getElementById("resultId").appendChild(paragraph);
+                    }
+                
+                })
+            }
+            
+            
+            function getMovieByTitle()
+            {
+                var title = document.getElementById("movieByTitle").value;
+                
+                let url = "http://localhost:8080/jpareststarter/api/xxx/title/" + title;
+                
+                
+                fetch(url)
+                    .then(res => res.json()) //in flow1, just do it
+                    .then(data => {
+                     // Inside this callback, and only here, the response data is available
+                     console.log("data",data);
+                    /* data now contains the response, converted to JavaScript
+                       Observe the output from the log-output above
+                       Now, just build your DOM changes using the data*/ 
+                       
+                    //render all values of each key
+                    for(key in data)
+                    {
+                        var paragraph = document.createElement("p");
+                        var node = document.createTextNode(data[key]);
+
+                        paragraph.appendChild(node);
+
+                        document.getElementById("resultTitle").appendChild(paragraph);
+                    }
+              
+                })
+            }
+            
+            function getAllMovies()
+            {
+                let url = "http://localhost:8080/jpareststarter/api/xxx/all";
+                
+                  fetch(url)
+                    .then(res => res.json()) //in flow1, just do it
+                    .then(data => {
+                     // Inside this callback, and only here, the response data is available
+                     console.log("data",data);
+                    /* data now contains the response, converted to JavaScript
+                       Observe the output from the log-output above
+                       Now, just build your DOM changes using the data*/ 
+                       
+                    for(var i = 0; i < data.length; i++)
+                    {
+                        var aMovie = data[i];
+                        console.log(aMovie);
+                        
+                        //render all values of each key
+                        for(key in aMovie)
+                        {
+                            var paragraph = document.createElement("p");
+                            var node = document.createTextNode(aMovie[key]);
+
+                            paragraph.appendChild(node);
+
+                            document.getElementById("resultAll").appendChild(paragraph);
+                        }
+                    }
+              
+                })
+                
+            }
+            
+            
+            document.getElementById("movieByIdButton").addEventListener("click", getMovieById);
+            document.getElementById("movieByTitleButton").addEventListener("click", getMovieByTitle);
+            document.getElementById("allMoviesButton").addEventListener("click", getAllMovies);
+            
+            
+    
+    
+        </script>
+        
     </body>
 </html>

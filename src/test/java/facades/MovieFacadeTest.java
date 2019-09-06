@@ -1,7 +1,9 @@
 package facades;
 
+import dto.MovieDTO;
 import utils.EMF_Creator;
-import entities.RenameMe;
+import entities.Movie;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
@@ -16,23 +18,23 @@ import utils.EMF_Creator.Strategy;
 
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
-public class FacadeExampleTest {
+public class MovieFacadeTest {
 
     private static EntityManagerFactory emf;
-    private static FacadeExample facade;
+    private static MovieFacade facade;
 
-    public FacadeExampleTest() {
+    public MovieFacadeTest() {
     }
 
     //@BeforeAll
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactory(
                 "pu",
-                "jdbc:mysql://localhost:3307/startcode_test",
+                "jdbc:mysql://localhost:3307/movie_test",
                 "dev",
                 "ax2",
                 EMF_Creator.Strategy.CREATE);
-        facade = FacadeExample.getFacadeExample(emf);
+        facade = MovieFacade.getMovieFacade(emf);
     }
 
     /*   **** HINT **** 
@@ -44,7 +46,7 @@ public class FacadeExampleTest {
     @BeforeAll
     public static void setUpClassV2() {
        emf = EMF_Creator.createEntityManagerFactory(DbSelector.TEST,Strategy.DROP_AND_CREATE);
-       facade = FacadeExample.getFacadeExample(emf);
+       facade = MovieFacade.getMovieFacade(emf);
     }
 
     @AfterAll
@@ -59,9 +61,9 @@ public class FacadeExampleTest {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(new RenameMe("Some txt", "More text"));
-            em.persist(new RenameMe("aaa", "bbb"));
+            em.createNamedQuery("Movie.deleteAllRows").executeUpdate();
+            em.persist(new Movie("The best movie", "Forfatteren"));
+            em.persist(new Movie("The worst movie", "Insteuktøren"));
 
             em.getTransaction().commit();
         } finally {
@@ -77,7 +79,47 @@ public class FacadeExampleTest {
     // TODO: Delete or change this method 
     @Test
     public void testAFacadeMethod() {
-        assertEquals(2, facade.getRenameMeCount(), "Expects two rows in the database");
+        assertEquals(2, facade.getMovieCount(), "Expects two rows in the database");
+    }
+    
+    @Test
+    public void testGetMovieById()
+    {
+        //arrange
+        Movie m;
+        
+        //act
+        m = facade.getMovieById(1);
+        
+        //asser
+        assertEquals("The worst movie", m.getTitle());
+    }
+    
+    @Test
+    public void testGetGetMovieByTitle()
+    {
+        //Arrange
+        List<MovieDTO> moviesByTitle;
+        
+        //Act
+        moviesByTitle = facade.getMovieByTitle("The best movie");
+        
+        //Assert
+        assertEquals("The best movie", moviesByTitle.get(0).getTitle());
+    }
+    
+     @Test
+    public void TestGetAllMovies()
+    {
+        //Arrange
+        List<Movie> allMovies;
+        
+        //Act
+        allMovies = facade.getAllMovies();
+        
+        //Assert
+        assertEquals(2, allMovies.size());
+        
     }
 
 }

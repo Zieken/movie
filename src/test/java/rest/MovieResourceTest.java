@@ -1,6 +1,6 @@
 package rest;
 
-import entities.RenameMe;
+import entities.Movie;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -14,6 +14,7 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,16 +25,19 @@ import utils.EMF_Creator.Strategy;
 
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
-public class RenameMeResourceTest {
+public class MovieResourceTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     //Read this line from a settings-file  since used several places
-    private static final String TEST_DB = "jdbc:mysql://localhost:3307/startcode_test";
+    private static final String TEST_DB = "jdbc:mysql://localhost:3307/movie_test";
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
+    
+    Movie m1 = new Movie("Good movie", "Forfatter");
+    Movie m2 = new Movie("Bad movie", "Instruktør");
 
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
@@ -70,9 +74,13 @@ public class RenameMeResourceTest {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(new RenameMe("Some txt","More text"));
-            em.persist(new RenameMe("aaa","bbb"));
+            em.createNamedQuery("Movie.deleteAllRows").executeUpdate();
+            em.persist(new Movie("Some txt","More text"));
+            em.persist(new Movie("aaa","bbb"));
+            em.persist(m1);
+            em.persist(m2);
+           
+            
            
             em.getTransaction().commit();
         } finally {
@@ -104,6 +112,31 @@ public class RenameMeResourceTest {
         .get("/xxx/count").then()
         .assertThat()
         .statusCode(HttpStatus.OK_200.getStatusCode())
-        .body("count", equalTo(2));   
+        .body("count", equalTo(4));   
     }
+    
+    @Test
+    @Disabled
+    public void testGetMovieById() throws Exception
+    {
+        given()
+        .contentType("application/json")
+        .get("/xxx/" + m1.getId()).then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("title", hasItem("Good movie"));   
+    }
+    
+    @Test
+    public void testGetMovieByTitle() throws Exception
+    {
+        given()
+        .contentType("application/json")
+        .get("/xxx/title/aaa").then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("title", hasItem("aaa"));   
+    }
+    
+    
 }
