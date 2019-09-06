@@ -15,3 +15,20 @@
 This project contains two major documentation files: 
  - [First time users - getting started](README_proof_of_concept.md)
  - [How to use for future projects](README_how_to_use.md)
+----------NOTER FOR DETTE PROJECT TIL REVIEWER HER----------
+
+Da Travis kræver, at hvert project har sit eget repo, og Lars har nævnt 
+at der bare skal afleveres projectet hvor Mandag, Tirsdag og 
+Fredagsopgaven indgår, så afleceres der kun dette link til denne ene 
+repo. (Onsdag og Torsdag opgaven er blevet lavet)
+
+I henhold til mandagsopgaven, så se classerne Movie.java, MovieDTO.java, 
+MovieFacade.java, MovieResource.Java
+
+I henhold til tirsdagsopgaven, så se classerne MovieFacadeTest.java og 
+MovieResourceTest.java
+
+I henhold til fredagsopgaven, så se index.html under src/main/webapp
+
+
+
